@@ -5,7 +5,6 @@ import {
     MOVE_SPEED,
     JUMP_VY,
     GAME_H,
-    PLATFORM_MIN_ON_SCREEN,
     GAP_Y_MIN,
     GAP_Y_MAX,
     PLATFORM_W,
@@ -19,6 +18,17 @@ const rand = (min: number, max: number) => Math.random() * (max - min) + min;
 const randInt = (min: number, max: number) => Math.floor(rand(min, max + 1));
 const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(max, v));
 const uid = () => Math.random().toString(36).slice(2, 9);
+
+
+let playerTilt = 0;
+
+if (typeof window !== "undefined") {
+    window.addEventListener("deviceorientation", (event) => {
+        const gamma = event.gamma ?? 0;
+        // Normalizza gamma in un range [-1, 1]
+        playerTilt = Math.max(-1, Math.min(1, gamma / 30));
+    });
+}
 
 function spawnPlatform(y: number, prevX?: number, worldW = 360) {
     const xRandom = randInt(SIDE_MARGIN, worldW - PLATFORM_W - SIDE_MARGIN);
@@ -34,6 +44,7 @@ function spawnPlatform(y: number, prevX?: number, worldW = 360) {
 }
 
 export function update(world: World, input: Input, dt: number) {
+    // aggiorna il tempo di gioco
     world.time += dt;
 
     const p = world.player;
@@ -41,6 +52,9 @@ export function update(world: World, input: Input, dt: number) {
     // input -> velocità orizzontale
     const dir = (input.right ? 1 : 0) - (input.left ? 1 : 0);
     p.vel.x = dir * MOVE_SPEED;
+    if (Math.abs(playerTilt) > 0.05) { 
+        p.vel.x = playerTilt * MOVE_SPEED;
+    }
 
     // gravità
     p.vel.y += GRAVITY * dt;
@@ -119,14 +133,22 @@ export function update(world: World, input: Input, dt: number) {
 
     // piattaforme: rimuovi sotto e genera sopra
     const bottomLimit = world.height + 120;
+    const prevCount = world.platforms.length;
     world.platforms = world.platforms.filter((pl) => pl.pos.y < bottomLimit);
-
-    while (world.platforms.length < PLATFORM_MIN_ON_SCREEN) {
+    const removed = prevCount - world.platforms.length;
+    for (let i = 0; i < removed; ++i) {
         // Trova la piattaforma più in alto
         const topPlat = world.platforms.reduce((a, b) => (a.pos.y < b.pos.y ? a : b));
         let newY = topPlat.pos.y - randInt(GAP_Y_MIN, GAP_Y_MAX);
-        // Non generare troppo sopra il bordo superiore
-        if (newY < -GAME_H * 0.2) newY = -GAME_H * 0.2;
         world.platforms.push(makePlatform(newY, topPlat?.pos.x, world.score));
+    }
+
+    // Se le piattaforme sono meno del minimo, genera fino a raggiungerlo
+    let highestPlatY = Math.min(...world.platforms.map(pl => pl.pos.y));
+    while (highestPlatY > -GAP_Y_MAX) {
+        const topPlat = world.platforms.reduce((a, b) => (a.pos.y < b.pos.y ? a : b));
+        let newY = topPlat.pos.y - randInt(GAP_Y_MIN, GAP_Y_MAX);
+        world.platforms.push(makePlatform(newY, topPlat?.pos.x, world.score));
+        highestPlatY = Math.min(...world.platforms.map(pl => pl.pos.y));
     }
 }

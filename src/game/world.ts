@@ -63,11 +63,10 @@ export function createWorld(): World {
     type: "base",
   });
 
-  // riempimento iniziale piattaforme: copri tutto lo schermo
+  // rempiimento schermo iniziale
   let y = startY;
   let prevX = startX;
-  // Genera piattaforme finché la più alta non supera la parte alta del canvas
-  while (y > -GAME_H * 0.1) {
+  while (y > 0) {
     y -= randInt(GAP_Y_MIN, GAP_Y_MAX);
     const p = makePlatform(y, prevX);
     prevX = p.pos.x;
@@ -79,7 +78,7 @@ export function createWorld(): World {
     width: GAME_W,
     height: GAME_H,
     player: {
-      pos: { x: GAME_W / 2 - 36, y: GAME_H - 216 }, // centrato rispetto a nuova larghezza
+      pos: { x: GAME_W / 2 - 36, y: GAME_H - 216 },
       vel: { x: 0, y: 0 },
       w: 72, 
       h: 72,
