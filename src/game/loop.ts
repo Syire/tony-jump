@@ -51,9 +51,11 @@ export function update(world: World, input: Input, dt: number) {
 
     // input -> velocità orizzontale
     const dir = (input.right ? 1 : 0) - (input.left ? 1 : 0);
+    // Applica una dead zone al tilt per evitare drift su mobile
+    let tiltX = Math.abs(playerTilt) > 0.12 ? playerTilt : 0;
     p.vel.x = dir * MOVE_SPEED;
-    if (Math.abs(playerTilt) > 0.05) { 
-        p.vel.x = playerTilt * MOVE_SPEED;
+    if (tiltX !== 0) {
+        p.vel.x = tiltX * MOVE_SPEED;
     }
 
     // gravità
@@ -75,17 +77,20 @@ export function update(world: World, input: Input, dt: number) {
         const playerBottomPrev = prevY + p.h;
         const playerBottomNow = p.pos.y + p.h;
         let landed = false;
-        const TOLLERANZA = 8; // pixel di tolleranza per evitare "salto nel vuoto"
+        const TOLLERANZA_Y = 16; // tolleranza verticale maggiore per mobile
+        const TOLLERANZA_X = 8;  // tolleranza orizzontale per piccoli drift
         for (let i = 0; i < world.platforms.length; ++i) {
             const plat = world.platforms[i];
             const platTop = plat.pos.y;
+            // tolleranza orizzontale: considera "sopra" anche se c'è piccolo drift
             const overlapX =
-                p.pos.x + p.w > plat.pos.x && p.pos.x < plat.pos.x + plat.w;
+                p.pos.x + p.w - TOLLERANZA_X > plat.pos.x && p.pos.x + TOLLERANZA_X < plat.pos.x + plat.w;
             // Il player deve scendere e toccare la piattaforma dall'alto, con tolleranza
-            const crossedTop =
-                playerBottomPrev <= platTop && playerBottomNow >= platTop &&
-                Math.abs(playerBottomNow - platTop) < TOLLERANZA;
-            if (overlapX && crossedTop) {
+            const isOnPlatform =
+                overlapX &&
+                playerBottomNow >= platTop &&
+                playerBottomNow <= platTop + TOLLERANZA_Y;
+            if (isOnPlatform) {
                 landed = true;
                 if (plat.type === "broken") {
                     // Primo salto: fa saltare e poi sparisce subito
