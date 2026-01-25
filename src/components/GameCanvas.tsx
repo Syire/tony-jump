@@ -108,21 +108,8 @@ export default function GameCanvas() {
         }}
       />
       {gameOver && (
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: "rgba(0,0,0,0.55)",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 12,
-            color: "white",
-          }}
-        >
-          <h2>Game Over</h2>
-          <button onClick={handleRestart}>Restart</button>
+        <div className="gameover-buttons">
+          <button onClick={handleRestart}>Riprova</button>
           <button onClick={() => navigate("/")}>Home</button>
         </div>
       )}

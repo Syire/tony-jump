@@ -101,7 +101,7 @@ export default function Home() {
                     </div>
                 </div>
             )}
-            <footer className="tony-footer">Made with stile &amp; Rayban 😎</footer>
+            <footer className="tony-footer">Made with react &amp; Culo</footer>
         </div>
     );
 }

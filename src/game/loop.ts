@@ -82,10 +82,10 @@ export function update(world: World, input: Input, dt: number) {
         for (let i = 0; i < world.platforms.length; ++i) {
             const plat = world.platforms[i];
             const platTop = plat.pos.y;
-            // tolleranza orizzontale: considera "sopra" anche se c'è piccolo drift
+            // Controlla se il player era sopra la piattaforma nel frame precedente
             const overlapX =
                 p.pos.x + p.w - TOLLERANZA_X > plat.pos.x && p.pos.x + TOLLERANZA_X < plat.pos.x + plat.w;
-            // Il player deve scendere e toccare la piattaforma dall'alto, con tolleranza
+            // Controlla se il player è atterrato sulla piattaforma in questo frame
             const isOnPlatform =
                 overlapX &&
                 playerBottomNow >= platTop &&

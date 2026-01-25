@@ -76,7 +76,53 @@ export function render(ctx: CanvasRenderingContext2D, world: World) {
 
   // GAME OVER 
   if (world.state === "gameover") {
-    ctx.fillStyle = "rgba(0,0,0,0.5)";
+    // Overlay sfumato
+    ctx.fillStyle = "rgba(0,0,0,0.45)";
     ctx.fillRect(0, 0, width, height);
+
+    // Box centrale
+    const boxW = Math.min(340, width * 0.8);
+    const boxH = 220;
+    const boxX = width / 2 - boxW / 2;
+    const boxY = height / 2 - boxH / 2;
+    ctx.save();
+    ctx.globalAlpha = 0.98;
+    ctx.fillStyle = "#fffbe6";
+    ctx.strokeStyle = "#b97a56";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.roundRect(boxX, boxY, boxW, boxH, 24);
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+
+    // Testo GAME OVER
+    ctx.save();
+    ctx.font = "bold 2.2rem 'Comic Sans MS', cursive";
+    ctx.fillStyle = "#b97a56";
+    ctx.textAlign = "center";
+    ctx.shadowColor = "#ffb347";
+    ctx.shadowBlur = 12;
+    ctx.fillText("GAME OVER", width / 2, boxY + 54);
+    ctx.restore();
+
+    // Punteggio
+    ctx.save();
+    ctx.font = "1.3rem 'Arial', sans-serif";
+    ctx.fillStyle = "#7a4a17";
+    ctx.textAlign = "center";
+    ctx.fillText(`Punteggio: ${world.score}`, width / 2, boxY + 98);
+    ctx.restore();
+
+    // Istruzioni
+    ctx.save();
+    ctx.font = "1.1rem 'Arial', sans-serif";
+    ctx.fillStyle = "#b97a56";
+    ctx.textAlign = "center";
+    ctx.globalAlpha = 0.7;
+    ctx.fillText("Tocca Riprova o Home", width / 2, boxY + 132);
+    ctx.restore();
+
+    // (I bottoni veri sono gestiti da React, qui solo grafica)
   }
 }

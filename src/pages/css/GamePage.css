@@ -37,12 +37,51 @@ canvas {
   display: block;
   width: 100vw;
   height: 100dvh;
-  max-width: 540px;
-  max-height: 960px;
   border-radius: 12px;
   box-shadow: 0 2px 16px #b97a5633;
   margin-bottom: 0;
   background: #f8f8f8;
+}
+
+.gameover-buttons {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, 20%);
+  display: flex;
+  flex-direction: row;
+  gap: 1.5vh;
+  z-index: 10;
+  border-radius: 16px;
+  padding: 1.5vh 1.5vh;
+  align-items: center;
+}
+.gameover-buttons button {
+  font-size: 2.5vh;
+  font-weight: 600;
+  color: #222;
+  background: linear-gradient(90deg, #ffe680 0%, #ffd1d1 100%);
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  padding: 1.5vh 1.5vh;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+.gameover-buttons button:hover {
+  background: linear-gradient(90deg, #ffd1d1 0%, #ffe680 100%);
+  transform: scale(1.06);
+}
+@media (max-width: 600px) {
+  .gameover-buttons {
+    flex-direction: row;
+    gap: 0.5vh;
+    padding: 1.5vh 1vh; 
+  }
+  .gameover-buttons button {
+    font-size: 2.5vh;
+    padding: 1.5vh 1.5vh;
+  }
 }
 
 @media (max-width: 500px) {
