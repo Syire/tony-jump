@@ -18,14 +18,3 @@ Puoi usarla come template per partire rapidamente con nuove applicazioni React!
 - 📁 Struttura semplice per subito partire
 - 🧩 Supporto per TypeScript (la maggior parte del codice è già in TypeScript)
 
----
-
-## 🚀 Installazione
-
-Assicurati di avere installato **Node.js** (>= 14.18) e **npm** o **yarn**.
-
-1. Clona il repository:
-
-   ```bash
-   git clone https://github.com/Syire/React_jump_higher.git
-   cd React_jump_higher
