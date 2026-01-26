@@ -1,7 +1,8 @@
 // @ts-ignore
 import { Link } from "react-router-dom";
 import "./css/HomeTony.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { MusicContext } from "../app/App";
 import { getPlayerName, setPlayerName, generateRandomName } from "../utils/playerName";
 
 
@@ -17,12 +18,15 @@ const MOTIVATIONAL_QUOTES = [
 ];
 
 
+
 export default function Home() {
     const [name, setName] = useState("");
     const [quote, setQuote] = useState("");
     const [showSettings, setShowSettings] = useState(false);
     const [effectsOn, setEffectsOn] = useState(true);
-    const [musicOn, setMusicOn] = useState(true);
+    const context = useContext(MusicContext);
+    const musicOn = context.musicOn;
+    const setMusicOn = context.setMusicOn as (v: boolean) => void;
 
     useEffect(() => {
         setName(getPlayerName());
@@ -44,13 +48,15 @@ export default function Home() {
     const tonyImgUrl = new URL('../assets/tony.png', import.meta.url).href;
     return (
         <div className="home tony-theme">
-            {/* Icona impostazioni in alto a destra */}
-            <button className="tony-settings-btn" onClick={() => setShowSettings(true)} title="Impostazioni" aria-label="Impostazioni">
+            {/* Icona impostazioni sotto la barra musica, centrata */}
+            <div className="tony-settings-bar">
+                <button className="tony-settings-btn tony-settings-bar-btn" onClick={() => setShowSettings(true)} title="Impostazioni" aria-label="Impostazioni">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#b97a56" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="3.5" />
                     <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.09a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-                </svg>
+				</svg>
             </button>
+            </div>
 
             <img src={tonyImgUrl} alt="Tony Pitony" className="tony-img" />
             <h1 className="title tony-title tony-animated">Tony Jump</h1>
@@ -91,10 +97,17 @@ export default function Home() {
                         </div>
                         <div className="tony-modal-section">
                             <label>
-                                <input type="checkbox" checked={musicOn} onChange={e => setMusicOn(e.target.checked)} /> Musica Tony
+                                <input
+                                    type="checkbox"
+                                    checked={musicOn}
+                                    onChange={e => {
+                                        const checked = (e.target as HTMLInputElement).checked;
+                                        setMusicOn(checked);
+                                    }}
+                                /> Musica Tony
                             </label>
                         </div>
-                        <div className="tony-modal-section" style={{fontSize:'0.95em',opacity:0.7}}>
+                        <div className="tony-modal-section" style={{ fontSize: '0.95em', opacity: 0.7 }}>
                             <em>Prossimamente: playlist Tony Pitony!</em>
                         </div>
                         <button className="tony-btn-close" onClick={() => setShowSettings(false)}>Chiudi</button>

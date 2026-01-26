@@ -1,3 +1,23 @@
+.tony-settings-bar {
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 68px;
+  margin-bottom: 0;
+  position: relative;
+  z-index: 10;
+}
+.tony-settings-bar-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.15s;
+}
+.tony-settings-bar-btn:hover {
+  transform: scale(1.12) rotate(-8deg);
+}
 .tony-quote {
   font-size: 1.15rem;
   color: #b97a56;
@@ -47,7 +67,8 @@
   width: 220px;
   max-width: 80vw;
   margin-bottom: 0.5em;
-  margin-top: 1em;
+  margin-top: 5em;
+  z-index: 1;
   filter: drop-shadow(0 8px 32px #b97a56cc);
   animation: tony-bounce 2.5s infinite cubic-bezier(.68,-0.55,.27,1.55);
 }
@@ -155,6 +176,7 @@
 }
 
 /* Icona impostazioni in alto a destra */
+
 .tony-settings-btn {
   position: absolute;
   top: 24px;
@@ -168,6 +190,10 @@
 }
 .tony-settings-btn:hover {
   transform: scale(1.12) rotate(-8deg);
+}
+.tony-settings-left {
+  left: 24px;
+  right: auto;
 }
 
 /* Overlay modal*/
