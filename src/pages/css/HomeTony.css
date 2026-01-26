@@ -1,3 +1,39 @@
+/* MusicPlayer responsive */
+.music-player-responsive {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  background: rgba(255,251,231,0.95);
+  z-index: 1000;
+  text-align: center;
+  padding: 8px 0 4px 0;
+  box-shadow: 0 2px 8px #0001;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.music-player-title {
+  font-size: 1.08rem;
+  margin-bottom: 2px;
+  word-break: break-word;
+}
+@media (max-width: 600px) {
+  .music-player-responsive {
+    font-size: 0.98rem;
+    padding: 6px 0 2px 0;
+  }
+  .music-player-title {
+    font-size: 0.97rem;
+  }
+  .tony-settings-bar {
+    margin-top: 56px;
+  }
+}
 .tony-settings-bar {
   width: 100vw;
   display: flex;
@@ -62,6 +98,37 @@
   padding: 0px 8px 0 8px;
   text-align: center;
   font-family: 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
+  box-sizing: border-box;
+}
+@media (max-width: 600px) {
+  .home.tony-theme {
+    padding: 0 2vw 0 2vw;
+  }
+  .tony-img {
+    width: 140px;
+    margin-top: 0.5em;
+  }
+  .tony-title {
+    font-size: 2.1rem;
+  }
+  .tony-sub {
+    font-size: 1.05rem;
+  }
+  .tony-card {
+    padding: 18px 6px 14px 6px;
+    max-width: 98vw;
+  }
+  .tony-btn, .tony-btn-secondary {
+    font-size: 1.01rem;
+    padding: 8px 12px;
+  }
+  .tony-footer {
+    font-size: 0.98rem;
+  }
+  .tony-modal {
+    min-width: 90vw;
+    padding: 18px 4vw 12px 4vw;
+  }
 }
 .tony-img {
   width: 220px;

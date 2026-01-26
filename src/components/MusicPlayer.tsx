@@ -56,34 +56,17 @@ const MusicPlayer: React.FC<Props> = ({ musicOn }) => {
     if (!musicOn) return null;
 
     return (
-        <div style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            background: 'rgba(255,251,231,0.95)',
-            zIndex: 1000,
-            textAlign: 'center',
-            padding: '8px 0',
-            boxShadow: '0 2px 8px #0001',
-            fontFamily: 'inherit',
-            fontWeight: 600,
-            fontSize: '1.1rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 16,
-        }}>
-            <span>
+        <div className="music-player-responsive">
+            <span className="music-player-title">
                 {playlist[0].title} <span style={{ color: '#b97a56', fontWeight: 400 }}>— {playlist[0].author}</span>
             </span>
             <iframe
                 ref={iframeRef}
                 title={playlist[0].title}
                 src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(playlist[0].url)}&color=%23b97a56&auto_play=true&show_comments=false&show_user=false&show_reposts=false&visual=false`}
-                width="320"
+                width="100%"
                 height="60"
-                style={{ border: 'none', marginLeft: 12 }}
+                style={{ border: 'none', marginLeft: 0, maxWidth: 400 }}
                 allow="autoplay"
             />
         </div>
