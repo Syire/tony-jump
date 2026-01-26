@@ -1,16 +1,31 @@
-# React + Vite
+# React Jump Higher 🚀
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Un progetto **React** configurato con **Vite**, pronto per iniziare a sviluppare applicazioni moderne con HMR (Hot Module Replacement), ESLint e una struttura modulare.
 
-Currently, two official plugins are available:
+## 🧠 Descrizione
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Questa repository fornisce una base leggera per iniziare progetti React utilizzando **Vite** come bundler. Include una configurazione pronta all’uso per sviluppo veloce e build ottimizzate.
 
-## React Compiler
+Puoi usarla come template per partire rapidamente con nuove applicazioni React!
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🏁 Caratteristiche principali
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- ⚡ **Vite** per sviluppo ultra-veloce
+- 🔄 **HMR** (Hot Module Replacement)
+- 🧹 Configurazione base di **ESLint**
+- 📁 Struttura semplice per subito partire
+- 🧩 Supporto per TypeScript (la maggior parte del codice è già in TypeScript)
+
+---
+
+## 🚀 Installazione
+
+Assicurati di avere installato **Node.js** (>= 14.18) e **npm** o **yarn**.
+
+1. Clona il repository:
+
+   ```bash
+   git clone https://github.com/Syire/React_jump_higher.git
+   cd React_jump_higher
