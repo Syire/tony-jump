@@ -1,30 +1,55 @@
-const BASE_URL = "http://localhost:3001";
+import { supabase } from "./supabaseClient";
 
 export type ScoreItem = {
-    id?: number;
-    name: string;
-    score: number;
-    createdAt: string;
+  id?: string;
+  name: string;
+  score: number;
+  createdAt: string;
+};
+
+type SupabaseScoreRow = {
+  id: string;
+  player_name: string;
+  score: number;
+  created_at: string;
 };
 
 export async function getTopScores(limit = 10): Promise<ScoreItem[]> {
-    const res = await fetch(`${BASE_URL}/scores`);
-    if (!res.ok) throw new Error("Errore nel caricamento leaderboard");
+  const { data, error } = await supabase
+    .from("scores")
+    .select("id, player_name, score, created_at")
+    .order("score", { ascending: false })
+    .limit(limit);
 
-    const data: ScoreItem[] = await res.json();
+  if (error) {
+    console.error(error);
+    throw new Error("Errore nel caricamento della leaderboard");
+  }
 
-    return data
-        .sort((a, b) => b.score - a.score)
-        .slice(0, limit);
+  return (data as SupabaseScoreRow[]).map((item) => ({
+    id: item.id,
+    name: item.player_name,
+    score: item.score,
+    createdAt: item.created_at,
+  }));
 }
 
+export async function postScore(item: Omit<ScoreItem, "id">): Promise<void> {
+  const cleanName = item.name.trim().slice(0, 20);
+  const cleanScore = Math.floor(item.score);
 
-export async function postScore(item: Omit<ScoreItem, "id">): Promise<ScoreItem> {
-    const res = await fetch(`${BASE_URL}/scores`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(item),
-    });
-    if (!res.ok) throw new Error("Errore nel salvataggio punteggio");
-    return res.json();
+  if (!cleanName) {
+    throw new Error("Nome giocatore non valido");
+  }
+
+  const { error } = await supabase.from("scores").insert({
+    player_name: cleanName,
+    score: cleanScore,
+    created_at: item.createdAt,
+  });
+
+  if (error) {
+    console.error(error);
+    throw new Error("Errore nel salvataggio del punteggio");
+  }
 }

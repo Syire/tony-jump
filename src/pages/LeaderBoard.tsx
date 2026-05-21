@@ -108,7 +108,7 @@ export default function Leaderboard() {
                     textDecoration: 'none',
                     padding: '12px 32px',
                     borderRadius: 999,
-                    border: '2px solid #b97a56',
+                    border: '2px solid #b97a5s6',
                     color: '#b97a56',
                     fontWeight: 800,
                     background: 'transparent',
