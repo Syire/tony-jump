@@ -69,8 +69,8 @@ export default function GameCanvas() {
         if (!scoreSaved) {
           scoreSaved = true;
           postScore({
-            name: getPlayerName(),
-            score: world.score,
+            name: getPlayerName() || "Player",
+            score: Math.floor(world.score),
             createdAt: new Date().toISOString(),
           }).catch(console.error);
         }
