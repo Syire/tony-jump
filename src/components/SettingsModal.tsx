@@ -84,7 +84,7 @@ export default function SettingsModal() {
 
         <div className="tony-settings-section">
           <div className="tony-setting-label-block">
-            <strong>Nome giocatore</strong>
+            <strong>Nome giocatore: </strong>
             <span>Questo nome verrà mostrato nella classifica.</span>
           </div>
 
