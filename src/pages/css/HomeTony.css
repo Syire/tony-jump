@@ -18,7 +18,7 @@
   box-sizing: border-box;
   min-height: 100vh;
   min-height: 100dvh;
-  padding: 0 8px 28px;
+  padding: clamp(24px, 4vh, 48px) 8px 34px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -28,44 +28,52 @@
 }
 
 .tony-settings-bar {
-  position: relative;
-  z-index: 10;
-  width: 100%;
-  margin-top: 18px;
+  position: absolute;
+  top: 22px;
+  right: 24px;
+  z-index: 20;
+  width: auto;
+  margin: 0;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
 }
 
 .tony-settings-bar-btn {
+  width: 46px;
+  height: 46px;
   padding: 0;
   border: 0;
-  background: transparent;
+  border-radius: 14px;
+  background: rgba(255, 251, 230, 0.35);
+  box-shadow: 0 8px 22px rgba(80, 45, 20, 0.16);
   cursor: pointer;
-  font-size: 1.9rem;
+  font-size: 1.8rem;
   line-height: 1;
-  transition: transform 0.15s ease;
+  transition: transform 0.15s ease, background 0.15s ease;
 }
 
 .tony-settings-bar-btn:hover {
-  transform: scale(1.12) rotate(-8deg);
+  background: rgba(255, 251, 230, 0.65);
+  transform: scale(1.08) rotate(-8deg);
 }
 
 .tony-img {
   z-index: 1;
-  width: 220px;
-  max-width: 80vw;
-  margin-top: clamp(0.75rem, 3vh, 2.25rem);
-  margin-bottom: 0.5em;
-  filter: drop-shadow(0 8px 32px rgba(185, 122, 86, 0.8));
+  width: clamp(240px, 18vw, 340px);
+  max-width: 84vw;
+  margin-top: 24px;
+  margin-bottom: 0.4em;
+  filter: drop-shadow(0 10px 34px rgba(185, 122, 86, 0.8));
   animation: tony-bounce 2.5s infinite cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
 
 .tony-title {
-  margin-bottom: 0.2em;
+  margin: 0 0 0.18em;
   color: var(--tony-brown);
-  font-size: 3.2rem;
+  font-size: clamp(3.6rem, 5vw, 5.2rem);
   font-weight: 900;
+  line-height: 0.95;
   letter-spacing: 2px;
   text-shadow: 0 2px 12px rgba(255, 255, 255, 0.4),
     0 6px 24px rgba(185, 122, 86, 0.8);
@@ -85,18 +93,18 @@
 }
 
 .tony-sub {
-  margin-bottom: 1.5em;
+  margin: 0 0 1em;
   color: var(--tony-dark);
-  font-size: 1.3rem;
-  font-weight: 600;
+  font-size: clamp(1.35rem, 1.7vw, 1.75rem);
+  font-weight: 700;
   letter-spacing: 1px;
 }
 
 .tony-quote {
-  margin-top: -0.5em;
-  margin-bottom: 1.2em;
+  margin-top: -0.2em;
+  margin-bottom: 1.3em;
   color: var(--tony-brown);
-  font-size: 1.15rem;
+  font-size: clamp(1.05rem, 1.25vw, 1.35rem);
   font-style: italic;
   letter-spacing: 0.5px;
   text-shadow: 0 1px 8px rgba(255, 255, 255, 0.47);
@@ -104,29 +112,31 @@
 }
 
 .tony-card {
-  width: min(95vw, 400px);
-  margin-bottom: 24px;
-  padding: 32px 24px 24px;
-  border-radius: 18px;
+  width: min(92vw, 520px);
+  margin-bottom: 28px;
+  padding: 38px 34px;
+  border-radius: 22px;
   background: var(--tony-cream);
-  box-shadow: 0 4px 24px var(--tony-shadow);
+  box-shadow: 0 8px 30px var(--tony-shadow);
 }
 
 .tony-actions {
   display: flex;
   justify-content: center;
-  gap: 18px;
+  gap: 22px;
 }
 
 .tony-btn,
 .tony-btn-secondary {
+  min-width: 150px;
   border-radius: 999px;
-  padding: 12px 32px;
-  font-size: 1.2rem;
-  font-weight: 800;
+  padding: 15px 34px;
+  font-size: 1.28rem;
+  font-weight: 900;
   text-decoration: none;
   cursor: pointer;
 }
+
 
 .tony-btn {
   border: 0;
@@ -155,9 +165,9 @@
 }
 
 .tony-footer {
-  margin-top: 32px;
+  margin-top: 8px;
   color: var(--tony-brown);
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   letter-spacing: 1px;
   opacity: 0.85;
 }
@@ -179,9 +189,9 @@
 
 .tony-settings-modal {
   position: relative;
-  width: min(95vw, 440px);
-  padding: 36px 32px 28px;
-  border-radius: 22px;
+  width: min(92vw, 560px);
+  padding: 42px 42px 34px;
+  border-radius: 24px;
   color: var(--tony-dark);
   background: var(--tony-cream);
   box-shadow: 0 8px 40px var(--tony-shadow),
@@ -190,9 +200,9 @@
 }
 
 .tony-settings-modal h2 {
-  margin: 0 0 22px;
+  margin: 0 0 28px;
   color: var(--tony-brown);
-  font-size: 2rem;
+  font-size: 2.35rem;
   font-weight: 900;
   text-align: center;
   letter-spacing: 1px;
@@ -226,36 +236,50 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 18px;
-  margin-top: 18px;
+  gap: 22px;
+  margin-top: 22px;
   text-align: left;
 }
 
+.tony-setting-row>div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
 .tony-setting-row strong {
+  display: block;
   color: var(--tony-brown);
-  font-size: 1.08rem;
+  font-size: 1.12rem;
+  line-height: 1.2;
+}
+
+.tony-setting-row strong::after {
+  content: ":";
 }
 
 .tony-setting-copy {
-  margin: 4px 0 0;
+  display: block;
+  margin: 0;
   color: var(--tony-dark);
-  font-size: 0.92rem;
-  line-height: 1.35;
-  opacity: 0.78;
+  font-size: 0.98rem;
+  line-height: 1.4;
+  opacity: 0.82;
 }
 
 .tony-settings-input {
   box-sizing: border-box;
   width: 100%;
-  margin-top: 8px;
-  padding: 10px 14px;
+  margin-top: 12px;
+  padding: 12px 16px;
   border: 2px solid var(--tony-brown);
-  border-radius: 10px;
+  border-radius: 12px;
   outline: none;
   color: var(--tony-dark);
   background: #fff;
   font: inherit;
-  font-size: 1.05rem;
+  font-size: 1.08rem;
 }
 
 .tony-settings-input:focus {
@@ -270,20 +294,20 @@
 .tony-settings-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 12px;
+  gap: 12px;
+  margin-top: 16px;
 }
 
 .tony-settings-actions button {
-  flex: 1 1 140px;
-  min-height: 40px;
+  flex: 1 1 160px;
+  min-height: 46px;
   border: 0;
   border-radius: 999px;
-  padding: 10px 16px;
+  padding: 11px 18px;
   color: var(--tony-cream);
   background: var(--tony-brown);
   font: inherit;
-  font-weight: 800;
+  font-weight: 900;
   cursor: pointer;
   transition: transform 0.16s ease, background 0.16s ease, color 0.16s ease;
 }
@@ -331,11 +355,11 @@
   transition: transform 0.18s ease;
 }
 
-.tony-switch input:checked + .tony-slider {
+.tony-switch input:checked+.tony-slider {
   background: linear-gradient(135deg, var(--tony-brown) 0%, var(--tony-gold) 100%);
 }
 
-.tony-switch input:checked + .tony-slider::before {
+.tony-switch input:checked+.tony-slider::before {
   transform: translateX(22px);
 }
 
@@ -510,6 +534,7 @@
 /* Animations */
 
 @keyframes tony-bounce {
+
   0%,
   100% {
     transform: translateY(0) rotate(-5deg);
@@ -581,21 +606,31 @@
 
 @media (max-width: 600px) {
   .home.tony-theme {
-    padding-inline: 2vw;
+    padding: 76px 4vw 28px;
+  }
+
+  .tony-settings-bar {
+    top: 16px;
+    right: 16px;
+  }
+
+  .tony-settings-bar-btn {
+    width: 42px;
+    height: 42px;
+    font-size: 1.55rem;
   }
 
   .tony-img {
-    width: clamp(120px, 42vw, 180px);
-    margin-top: 1rem;
+    width: clamp(170px, 48vw, 230px);
+    margin-top: 0;
   }
 
   .tony-title {
-    font-size: clamp(2rem, 11vw, 3rem);
-    line-height: 1;
+    font-size: clamp(3rem, 14vw, 4rem);
   }
 
   .tony-sub {
-    font-size: clamp(1rem, 4vw, 1.2rem);
+    font-size: clamp(1.1rem, 4.5vw, 1.35rem);
   }
 
   .tony-quote {
@@ -604,8 +639,8 @@
   }
 
   .tony-card {
-    width: min(94vw, 400px);
-    padding: 18px 6px 14px;
+    width: min(94vw, 420px);
+    padding: 24px 18px;
   }
 
   .tony-actions {
@@ -619,8 +654,8 @@
   .tony-btn-secondary {
     width: 100%;
     box-sizing: border-box;
-    padding: 8px 12px;
-    font-size: 1.01rem;
+    padding: 12px 18px;
+    font-size: 1.08rem;
     text-align: center;
   }
 
@@ -629,15 +664,21 @@
   }
 
   .tony-settings-modal {
-    padding: 30px 18px 22px;
+    width: min(92vw, 440px);
+    padding: 34px 22px 26px;
+  }
+
+  .tony-settings-modal h2 {
+    font-size: 2rem;
   }
 
   .tony-setting-row {
-    gap: 12px;
+    gap: 14px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .tony-img,
   .tony-quote,
   .tony-settings-modal,
