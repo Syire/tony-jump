@@ -21,10 +21,7 @@ export async function getTopScores(limit = 10): Promise<ScoreItem[]> {
     .order("score", { ascending: false })
     .limit(limit);
 
-  if (error) {
-    console.error(error);
-    throw new Error("Errore nel caricamento della leaderboard");
-  }
+   
 
   return (data as SupabaseScoreRow[]).map((item) => ({
     id: item.id,

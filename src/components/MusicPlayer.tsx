@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 declare global {
   interface Window {
@@ -83,6 +83,7 @@ function loadSoundCloudApi(): Promise<void> {
     script.onload = () => resolve();
     script.onerror = () =>
       reject(new Error("Errore caricamento SoundCloud API"));
+
     document.body.appendChild(script);
   });
 }
@@ -98,6 +99,7 @@ function getSoundCloudEmbedUrl(trackUrl: string) {
     show_playcount: "false",
     show_user: "true",
     visual: "false",
+    color: "b97a56",
   });
 
   return `https://w.soundcloud.com/player/?${params.toString()}`;
@@ -105,64 +107,47 @@ function getSoundCloudEmbedUrl(trackUrl: string) {
 
 export default function MusicPlayer({ musicOn }: MusicPlayerProps) {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
-  const widgetRef = useRef<any>(null);
+  const widgetRef = useRef<any | null>(null);
+  const currentIndexRef = useRef(0);
+  const isPlayingRef = useRef(false);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isReady, setIsReady] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [needsManualStart, setNeedsManualStart] = useState(false);
   const [error, setError] = useState("");
 
   const currentTrack = playlist[currentIndex];
 
-  const iframeSrc = useMemo(() => {
-    return getSoundCloudEmbedUrl(currentTrack.url);
-  }, [currentTrack.url]);
-
-  async function setupWidget() {
-    if (!iframeRef.current) return;
-
-    try {
-      await loadSoundCloudApi();
-
-      const widget = window.SC.Widget(iframeRef.current);
-      widgetRef.current = widget;
-
-      widget.bind(window.SC.Widget.Events.READY, () => {
-        setIsReady(true);
-      });
-
-      widget.bind(window.SC.Widget.Events.PLAY, () => {
-        setIsPlaying(true);
-      });
-
-      widget.bind(window.SC.Widget.Events.PAUSE, () => {
-        setIsPlaying(false);
-      });
-
-      widget.bind(window.SC.Widget.Events.FINISH, () => {
-        playNextTrack();
-      });
-    } catch {
-      setError("Impossibile caricare il player musicale.");
-    }
-  }
+  const initialIframeSrc = useMemo(() => {
+    return getSoundCloudEmbedUrl(playlist[0].url);
+  }, []);
 
   useEffect(() => {
-    if (!musicOn) {
-      widgetRef.current?.pause?.();
-      setIsPlaying(false);
+    currentIndexRef.current = currentIndex;
+  }, [currentIndex]);
+
+  useEffect(() => {
+    isPlayingRef.current = isPlaying;
+  }, [isPlaying]);
+
+  function tryPlay() {
+    const widget = widgetRef.current;
+
+    if (!widget) {
+      setNeedsManualStart(true);
       return;
     }
 
-    setupWidget();
-  }, [musicOn, iframeSrc]);
-
-  function playCurrentTrack() {
-    const widget = widgetRef.current;
-    if (!widget) return;
-
+    setNeedsManualStart(false);
     widget.play();
-    setIsPlaying(true);
+
+    window.setTimeout(() => {
+      if (!isPlayingRef.current) {
+        setNeedsManualStart(true);
+      }
+    }, 900);
   }
 
   function pauseTrack() {
@@ -173,75 +158,181 @@ export default function MusicPlayer({ musicOn }: MusicPlayerProps) {
     setIsPlaying(false);
   }
 
-  function loadTrack(index: number, shouldPlay = false) {
+  const loadTrack = useCallback((index: number, shouldPlay = false) => {
     const nextIndex = (index + playlist.length) % playlist.length;
     const nextTrack = playlist[nextIndex];
+    const widget = widgetRef.current;
 
     setCurrentIndex(nextIndex);
+    setIsReady(false);
+    setNeedsManualStart(false);
 
-    const widget = widgetRef.current;
     if (!widget) return;
 
     widget.load(nextTrack.url, {
       auto_play: shouldPlay,
+      buying: false,
+      sharing: false,
+      download: false,
+      show_comments: false,
+      show_playcount: false,
+      show_user: true,
+      visual: false,
+      color: "b97a56",
       callback: () => {
+        setIsReady(true);
+
         if (shouldPlay) {
           widget.play();
-          setIsPlaying(true);
+
+          window.setTimeout(() => {
+            if (!isPlayingRef.current) {
+              setNeedsManualStart(true);
+            }
+          }, 900);
         }
       },
     });
-  }
+  }, []);
 
-  function playNextTrack() {
-    loadTrack(currentIndex + 1, true);
-  }
+  const playNextTrack = useCallback(() => {
+    loadTrack(currentIndexRef.current + 1, true);
+  }, [loadTrack]);
 
-  function playPreviousTrack() {
-    loadTrack(currentIndex - 1, true);
-  }
+  const playPreviousTrack = useCallback(() => {
+    loadTrack(currentIndexRef.current - 1, true);
+  }, [loadTrack]);
+
+  useEffect(() => {
+    if (!musicOn) {
+      widgetRef.current?.pause?.();
+      setIsPlaying(false);
+      setNeedsManualStart(false);
+      return;
+    }
+
+    let cancelled = false;
+
+    async function setupWidget() {
+      try {
+        setError("");
+        await loadSoundCloudApi();
+
+        if (cancelled || !iframeRef.current) return;
+
+        const widget = window.SC.Widget(iframeRef.current);
+        widgetRef.current = widget;
+
+        widget.bind(window.SC.Widget.Events.READY, () => {
+          setIsReady(true);
+          tryPlay();
+        });
+
+        widget.bind(window.SC.Widget.Events.PLAY, () => {
+          setIsPlaying(true);
+          setNeedsManualStart(false);
+        });
+
+        widget.bind(window.SC.Widget.Events.PAUSE, () => {
+          setIsPlaying(false);
+        });
+
+        widget.bind(window.SC.Widget.Events.FINISH, () => {
+          playNextTrack();
+        });
+
+        widget.bind(window.SC.Widget.Events.ERROR, () => {
+          setError("Impossibile caricare questa traccia.");
+        });
+      } catch {
+        setError("Impossibile caricare il player musicale.");
+      }
+    }
+
+    setupWidget();
+
+    return () => {
+      cancelled = true;
+      widgetRef.current?.pause?.();
+    };
+  }, [musicOn, playNextTrack]);
 
   if (!musicOn) return null;
 
   return (
-    <section className="music-player" aria-label="Player musicale Tony Pitony">
-      <div className="music-player__info">
-        <strong>{currentTrack.title}</strong>
-        <span>{currentTrack.author}</span>
-      </div>
+    <aside
+      className={`music-player-responsive ${
+        isCollapsed ? "is-collapsed" : ""
+      }`}
+      aria-label="Player musicale"
+    >
+      <button
+        type="button"
+        className="music-player-tab"
+        onClick={() => setIsCollapsed((value) => !value)}
+        aria-label={isCollapsed ? "Apri player musicale" : "Chiudi player musicale"}
+        title={isCollapsed ? "Apri player musicale" : "Chiudi player musicale"}
+      >
+        {isCollapsed ? "🎵" : "×"}
+      </button>
 
-      <div className="music-player__controls">
-        <button type="button" onClick={playPreviousTrack}>
-          ⏮
-        </button>
+      {!isCollapsed && (
+        <>
+          <div className="music-player-header">
+            <span className="music-player-kicker">Tony Radio</span>
 
-        {!isPlaying ? (
-          <button type="button" onClick={playCurrentTrack} disabled={!isReady}>
-            ▶ Avvia playlist
-          </button>
-        ) : (
-          <button type="button" onClick={pauseTrack}>
-            ⏸ Pausa
-          </button>
-        )}
+            <strong className="music-player-title">{currentTrack.title}</strong>
 
-        <button type="button" onClick={playNextTrack}>
-          ⏭
-        </button>
-      </div>
+            <span className="music-player-author">{currentTrack.author}</span>
+          </div>
 
-      {error && <p className="music-player__error">{error}</p>}
+          <iframe
+            ref={iframeRef}
+            title="SoundCloud music player"
+            className="music-player-iframe"
+            src={initialIframeSrc}
+            allow="autoplay"
+          />
 
-      <iframe
-        ref={iframeRef}
-        title="SoundCloud player"
-        width="100%"
-        height="120"
-        scrolling="no"
-        frameBorder="no"
-        allow="autoplay"
-        src={iframeSrc}
-      />
-    </section>
+          <div className="music-player-controls">
+            <button
+              type="button"
+              onClick={playPreviousTrack}
+              disabled={!isReady}
+              aria-label="Traccia precedente"
+            >
+              ⏮
+            </button>
+
+            {isPlaying ? (
+              <button type="button" onClick={pauseTrack} disabled={!isReady}>
+                ⏸ Pausa
+              </button>
+            ) : (
+              <button type="button" onClick={tryPlay} disabled={!isReady}>
+                ▶ Play
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={playNextTrack}
+              disabled={!isReady}
+              aria-label="Traccia successiva"
+            >
+              ⏭
+            </button>
+          </div>
+
+          {needsManualStart && (
+            <small className="music-player-hint">
+              Tocca Play per avviare la musica.
+            </small>
+          )}
+
+          {error && <small className="music-player-error">{error}</small>}
+        </>
+      )}
+    </aside>
   );
 }

@@ -507,3 +507,195 @@
     padding: 0 12px;
   }
 }
+/* MusicPlayer laterale SoundCloud */
+.music-player-responsive {
+  position: fixed;
+  top: 50%;
+  right: 16px;
+  left: auto;
+  bottom: auto;
+  transform: translateY(-50%);
+  z-index: 1000;
+
+  width: min(300px, calc(100vw - 32px));
+  padding: 14px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+
+  border-radius: 24px;
+  border: 1px solid rgba(185, 122, 86, 0.26);
+  background: rgba(255, 251, 231, 0.94);
+  box-shadow: 0 18px 44px rgba(80, 45, 20, 0.24);
+  backdrop-filter: blur(14px);
+
+  color: #7a4a17;
+  text-align: left;
+  font-family: inherit;
+  font-weight: 700;
+}
+
+.music-player-responsive.is-collapsed {
+  width: 58px;
+  height: 58px;
+  padding: 0;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+}
+
+.music-player-tab {
+  position: absolute;
+  left: -18px;
+  top: 18px;
+
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 999px;
+
+  background: linear-gradient(135deg, #b97a56 0%, #ffb347 100%);
+  color: #fffbe6;
+  box-shadow: 0 8px 20px rgba(80, 45, 20, 0.24);
+
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.music-player-responsive.is-collapsed .music-player-tab {
+  position: static;
+  width: 58px;
+  height: 58px;
+  font-size: 1.45rem;
+}
+
+.music-player-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-right: 8px;
+}
+
+.music-player-kicker {
+  width: fit-content;
+  padding: 4px 9px;
+  border-radius: 999px;
+
+  background: rgba(185, 122, 86, 0.13);
+  color: #b97a56;
+
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.music-player-title {
+  margin-top: 4px;
+  font-size: 1.05rem;
+  line-height: 1.15;
+  color: #7a4a17;
+  word-break: break-word;
+}
+
+.music-player-author {
+  color: #b97a56;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.music-player-iframe {
+  width: 100%;
+  height: 86px;
+  border: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.music-player-controls {
+  display: grid;
+  grid-template-columns: 42px 1fr 42px;
+  gap: 8px;
+  align-items: center;
+}
+
+.music-player-controls button {
+  border: none;
+  border-radius: 999px;
+  padding: 9px 10px;
+
+  background: #fffbe6;
+  color: #7a4a17;
+  box-shadow: inset 0 0 0 2px rgba(185, 122, 86, 0.2);
+
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 900;
+  transition: transform 0.16s ease, background 0.16s ease, color 0.16s ease;
+}
+
+.music-player-controls button:hover:not(:disabled) {
+  transform: translateY(-1px) scale(1.03);
+  background: #ffb347;
+  color: #fffbe6;
+}
+
+.music-player-controls button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.music-player-hint,
+.music-player-error {
+  font-size: 0.78rem;
+  line-height: 1.25;
+}
+
+.music-player-hint {
+  color: #7a4a17;
+  opacity: 0.75;
+}
+
+.music-player-error {
+  color: #a83232;
+}
+
+/* Ora che il player non sta più in alto, la home non deve avere spazio extra sopra */
+.tony-settings-bar {
+  margin-top: 18px;
+}
+
+@media (max-width: 760px) {
+  .music-player-responsive {
+    top: auto;
+    right: 12px;
+    bottom: calc(14px + env(safe-area-inset-bottom));
+    transform: none;
+    width: min(320px, calc(100vw - 24px));
+    border-radius: 24px;
+  }
+
+  .music-player-tab {
+    left: auto;
+    right: 12px;
+    top: -18px;
+  }
+
+  .music-player-responsive.is-collapsed {
+    width: 56px;
+    height: 56px;
+  }
+
+  .music-player-responsive.is-collapsed .music-player-tab {
+    width: 56px;
+    height: 56px;
+  }
+
+  .tony-settings-bar {
+    margin-top: 18px;
+  }
+}
