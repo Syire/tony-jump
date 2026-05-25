@@ -261,9 +261,8 @@ export default function MusicPlayer({ musicOn }: MusicPlayerProps) {
 
   return (
     <aside
-      className={`music-player-responsive ${
-        isCollapsed ? "is-collapsed" : ""
-      }`}
+      className={`music-player-responsive ${isCollapsed ? "is-collapsed" : ""
+        }`}
       aria-label="Player musicale"
     >
       <button
@@ -276,63 +275,59 @@ export default function MusicPlayer({ musicOn }: MusicPlayerProps) {
         {isCollapsed ? "🎵" : "×"}
       </button>
 
-      {!isCollapsed && (
-        <>
-          <div className="music-player-header">
-            <span className="music-player-kicker">Tony Radio</span>
+      <div className="music-player-content" aria-hidden={isCollapsed}>
+        <div className="music-player-header">
+          <span className="music-player-kicker">Tony Radio</span>
+          <strong className="music-player-title">{currentTrack.title}</strong>
+          <span className="music-player-author">{currentTrack.author}</span>
+        </div>
 
-            <strong className="music-player-title">{currentTrack.title}</strong>
+        <iframe
+          ref={iframeRef}
+          title="SoundCloud music player"
+          className="music-player-iframe"
+          src={initialIframeSrc}
+          allow="autoplay"
+        />
 
-            <span className="music-player-author">{currentTrack.author}</span>
-          </div>
+        <div className="music-player-controls">
+          <button
+            type="button"
+            onClick={playPreviousTrack}
+            disabled={!isReady}
+            aria-label="Traccia precedente"
+          >
+            ⏮
+          </button>
 
-          <iframe
-            ref={iframeRef}
-            title="SoundCloud music player"
-            className="music-player-iframe"
-            src={initialIframeSrc}
-            allow="autoplay"
-          />
-
-          <div className="music-player-controls">
-            <button
-              type="button"
-              onClick={playPreviousTrack}
-              disabled={!isReady}
-              aria-label="Traccia precedente"
-            >
-              ⏮
+          {isPlaying ? (
+            <button type="button" onClick={pauseTrack} disabled={!isReady}>
+              ⏸ Pausa
             </button>
-
-            {isPlaying ? (
-              <button type="button" onClick={pauseTrack} disabled={!isReady}>
-                ⏸ Pausa
-              </button>
-            ) : (
-              <button type="button" onClick={tryPlay} disabled={!isReady}>
-                ▶ Play
-              </button>
-            )}
-
-            <button
-              type="button"
-              onClick={playNextTrack}
-              disabled={!isReady}
-              aria-label="Traccia successiva"
-            >
-              ⏭
+          ) : (
+            <button type="button" onClick={tryPlay} disabled={!isReady}>
+              ▶ Play
             </button>
-          </div>
-
-          {needsManualStart && (
-            <small className="music-player-hint">
-              Tocca Play per avviare la musica.
-            </small>
           )}
 
-          {error && <small className="music-player-error">{error}</small>}
-        </>
-      )}
+          <button
+            type="button"
+            onClick={playNextTrack}
+            disabled={!isReady}
+            aria-label="Traccia successiva"
+          >
+            ⏭
+          </button>
+        </div>
+
+        {needsManualStart && (
+          <small className="music-player-hint">
+            Tocca Play per avviare la musica.
+          </small>
+        )}
+
+        {error && <small className="music-player-error">{error}</small>}
+      </div>
     </aside>
   );
 }
