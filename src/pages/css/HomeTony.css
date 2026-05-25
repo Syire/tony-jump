@@ -699,3 +699,400 @@
     margin-top: 18px;
   }
 }
+/* Settings icon sempre sopra al modal */
+.tony-settings-bar {
+  position: fixed;
+  top: calc(16px + env(safe-area-inset-top));
+  right: 16px;
+  z-index: 1400;
+  margin-top: 0;
+}
+
+.tony-settings-bar-btn {
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 251, 231, 0.96);
+  color: #7a4a17;
+  box-shadow: 0 10px 28px rgba(80, 45, 20, 0.2);
+  cursor: pointer;
+  font-size: 1.35rem;
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.tony-settings-bar-btn:hover {
+  transform: translateY(-1px) rotate(12deg);
+  box-shadow: 0 14px 34px rgba(80, 45, 20, 0.26);
+}
+
+/* Backdrop modal */
+.tony-settings-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+
+  padding: calc(82px + env(safe-area-inset-top)) 16px 24px;
+
+  background:
+    radial-gradient(circle at top left, rgba(255, 179, 71, 0.18), transparent 36%),
+    rgba(38, 22, 12, 0.48);
+  backdrop-filter: blur(8px);
+
+  animation: tony-modal-fade 0.18s ease-out;
+}
+
+/* Card modal */
+.tony-settings-modal {
+  position: relative;
+
+  width: min(92vw, 460px);
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+
+  padding: 24px;
+  border-radius: 28px;
+  border: 1px solid rgba(185, 122, 86, 0.28);
+
+  background:
+    linear-gradient(180deg, rgba(255, 251, 231, 0.98), rgba(255, 244, 212, 0.96));
+  box-shadow:
+    0 24px 80px rgba(55, 28, 10, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75);
+
+  color: #4b2b16;
+  animation: tony-modal-pop 0.2s ease-out;
+}
+
+/* Bottone chiudi dentro la card, non sopra l'icona impostazioni */
+.tony-settings-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 999px;
+
+  background: rgba(185, 122, 86, 0.13);
+  color: #7a4a17;
+
+  cursor: pointer;
+  font-size: 1.5rem;
+  font-weight: 900;
+  line-height: 1;
+
+  transition: transform 0.16s ease, background 0.16s ease;
+}
+
+.tony-settings-close:hover {
+  transform: scale(1.06);
+  background: rgba(185, 122, 86, 0.22);
+}
+
+.tony-settings-modal-header {
+  padding-right: 42px;
+  margin-bottom: 22px;
+}
+
+.tony-settings-eyebrow {
+  display: inline-flex;
+  width: fit-content;
+  margin-bottom: 8px;
+  padding: 5px 10px;
+
+  border-radius: 999px;
+  background: rgba(185, 122, 86, 0.12);
+  color: #b97a56;
+
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tony-settings-modal h2 {
+  margin: 0;
+  color: #7a4a17;
+  font-size: clamp(1.65rem, 5vw, 2.2rem);
+  line-height: 1;
+}
+
+.tony-settings-modal-header p {
+  margin: 10px 0 0;
+  color: rgba(75, 43, 22, 0.72);
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.tony-settings-section {
+  padding: 16px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.42);
+  box-shadow: inset 0 0 0 1px rgba(185, 122, 86, 0.13);
+}
+
+.tony-settings-section + .tony-settings-section {
+  margin-top: 14px;
+}
+
+.tony-setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.tony-setting-row + .tony-setting-row {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(185, 122, 86, 0.15);
+}
+
+.tony-setting-label-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tony-setting-label-block strong {
+  color: #4b2b16;
+  font-size: 1rem;
+}
+
+.tony-setting-label-block span {
+  color: rgba(75, 43, 22, 0.68);
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.tony-settings-input {
+  width: 100%;
+  margin-top: 12px;
+  padding: 13px 14px;
+
+  border: 2px solid rgba(185, 122, 86, 0.22);
+  border-radius: 16px;
+  outline: none;
+
+  background: rgba(255, 251, 231, 0.86);
+  color: #4b2b16;
+
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 800;
+
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.tony-settings-input:focus {
+  border-color: #b97a56;
+  box-shadow: 0 0 0 4px rgba(185, 122, 86, 0.14);
+}
+
+.tony-settings-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.tony-settings-actions button {
+  border: none;
+  border-radius: 999px;
+  padding: 11px 12px;
+
+  background: linear-gradient(135deg, #b97a56 0%, #ffb347 100%);
+  color: #fffbe6;
+
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 900;
+
+  box-shadow: 0 8px 18px rgba(185, 122, 86, 0.24);
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.tony-settings-actions button:nth-child(2) {
+  background: #fffbe6;
+  color: #7a4a17;
+  box-shadow: inset 0 0 0 2px rgba(185, 122, 86, 0.22);
+}
+
+.tony-settings-actions button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(185, 122, 86, 0.28);
+}
+
+.tony-settings-save-message {
+  margin: 10px 0 0;
+  color: #2f7d32;
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+/* Toggle */
+.tony-switch {
+  position: relative;
+  flex: 0 0 auto;
+  width: 56px;
+  height: 32px;
+}
+
+.tony-switch input {
+  display: none;
+}
+
+.tony-slider {
+  position: absolute;
+  inset: 0;
+
+  border-radius: 999px;
+  background: rgba(122, 74, 23, 0.22);
+  cursor: pointer;
+
+  transition: background 0.18s ease;
+}
+
+.tony-slider::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+
+  background: #fffbe6;
+  box-shadow: 0 4px 12px rgba(80, 45, 20, 0.22);
+
+  transition: transform 0.18s ease;
+}
+
+.tony-switch input:checked + .tony-slider {
+  background: linear-gradient(135deg, #b97a56 0%, #ffb347 100%);
+}
+
+.tony-switch input:checked + .tony-slider::before {
+  transform: translateX(24px);
+}
+
+@keyframes tony-modal-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes tony-modal-pop {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 560px) {
+  .tony-settings-modal-backdrop {
+    padding: calc(76px + env(safe-area-inset-top)) 12px 18px;
+  }
+
+  .tony-settings-modal {
+    width: 100%;
+    padding: 20px;
+    border-radius: 24px;
+  }
+
+  .tony-settings-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .tony-setting-row {
+    align-items: flex-start;
+  }
+}
+/* Icona impostazioni laterale */
+.tony-settings-bar {
+  position: fixed;
+  top: calc(18px + env(safe-area-inset-top));
+  right: 18px;
+  left: auto;
+  bottom: auto;
+
+  width: auto;
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  z-index: 1400;
+}
+
+.tony-settings-bar-btn {
+  width: 48px;
+  height: 48px;
+
+  display: grid;
+  place-items: center;
+
+  border: none;
+  border-radius: 999px;
+
+  background: rgba(255, 251, 231, 0.96);
+  color: #7a4a17;
+
+  box-shadow: 0 10px 28px rgba(80, 45, 20, 0.22);
+
+  cursor: pointer;
+  font-size: 1.35rem;
+  line-height: 1;
+
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.tony-settings-bar-btn:hover {
+  transform: translateY(-1px) rotate(12deg);
+  box-shadow: 0 14px 34px rgba(80, 45, 20, 0.28);
+}
+.music-player-responsive.is-collapsed {
+  width: 58px;
+  height: 58px;
+  padding: 0;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.music-player-content {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.music-player-responsive.is-collapsed .music-player-content {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
