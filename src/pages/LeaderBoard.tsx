@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { getTopScores, ScoreItem } from "../services/scoresApi";
@@ -6,19 +6,44 @@ import "./css/LeaderBoard.css";
 
 const podiumIcons = ["👑", "🥈", "🥉"];
 
+const SCORES_LIMIT = 50;
+const SCORES_PER_PAGE = 5;
+
 export default function Leaderboard() {
   const [scores, setScores] = useState<ScoreItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
-    getTopScores(10)
+    getTopScores(SCORES_LIMIT)
       .then((data) => {
         setScores(data);
+        setCurrentPage(0);
       })
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
   }, []);
+
+  const totalPages = Math.max(1, Math.ceil(scores.length / SCORES_PER_PAGE));
+
+  const currentScores = useMemo(() => {
+    const start = currentPage * SCORES_PER_PAGE;
+    const end = start + SCORES_PER_PAGE;
+
+    return scores.slice(start, end);
+  }, [scores, currentPage]);
+
+  const canGoBack = currentPage > 0;
+  const canGoNext = currentPage < totalPages - 1;
+
+  const goToPreviousPage = () => {
+    setCurrentPage((page) => Math.max(0, page - 1));
+  };
+
+  const goToNextPage = () => {
+    setCurrentPage((page) => Math.min(totalPages - 1, page + 1));
+  };
 
   return (
     <main className="leaderboard-page">
@@ -32,8 +57,8 @@ export default function Leaderboard() {
             </h1>
 
             <p className="leaderboard-subtitle">
-              La pista da ballo dei campioni: chi salta più in alto conquista il
-              podio Pitony.
+              Sfoglia il libro dei campioni: ogni pagina mostra i migliori
+              salti della pista Pitony.
             </p>
           </header>
 
@@ -55,43 +80,95 @@ export default function Leaderboard() {
             )}
 
             {!loading && !error && scores.length > 0 && (
-              <ol className="leaderboard-list" aria-label="Top 10 giocatori">
-                {scores.map((score, index) => {
-                  const rank = index + 1;
-                  const isPodium = rank <= 3;
-
-                  return (
-                    <li
-                      key={score.id ?? `${score.name}-${score.score}-${index}`}
-                      className={`leaderboard-row${
-                        isPodium ? " leaderboard-row--podium" : ""
-                      }`}
-                    >
-                      <span className="leaderboard-rank">
-                        {podiumIcons[index] ?? rank}
+              <div className="leaderboard-book">
+                <div className="leaderboard-book-cover">
+                  <div className="leaderboard-book-page">
+                    <div className="leaderboard-page-top">
+                      <span>Pagina {currentPage + 1}</span>
+                      <span>
+                        Posizioni{" "}
+                        {currentPage * SCORES_PER_PAGE + 1}
+                        {" - "}
+                        {currentPage * SCORES_PER_PAGE + currentScores.length}
                       </span>
+                    </div>
 
-                      <div className="leaderboard-player">
-                        <span className="leaderboard-name">{score.name}</span>
-                        <span className="leaderboard-label">
-                          Posizione #{rank}
-                        </span>
-                      </div>
+                    <ol className="leaderboard-list" aria-label="Classifica giocatori">
+                      {currentScores.map((score, index) => {
+                        const globalIndex =
+                          currentPage * SCORES_PER_PAGE + index;
+                        const rank = globalIndex + 1;
+                        const isPodium = rank <= 3;
 
-                      <div className="leaderboard-score">
-                        <strong>{score.score}</strong>
-                        <span>punti</span>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ol>
+                        return (
+                          <li
+                            key={
+                              score.id ?? `${score.name}-${score.score}-${rank}`
+                            }
+                            className={`leaderboard-row${
+                              isPodium ? " leaderboard-row--podium" : ""
+                            }`}
+                          >
+                            <span className="leaderboard-rank">
+                              {podiumIcons[globalIndex] ?? rank}
+                            </span>
+
+                            <div className="leaderboard-player">
+                              <span className="leaderboard-name">
+                                {score.name}
+                              </span>
+                              <span className="leaderboard-label">
+                                Posizione #{rank}
+                              </span>
+                            </div>
+
+                            <div className="leaderboard-score">
+                              <strong>{score.score}</strong>
+                              <span>punti</span>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ol>
+
+                    <div className="leaderboard-page-bottom">
+                      <span>
+                        {scores.length} giocatori nella classifica caricata
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="leaderboard-book-controls">
+                  <button
+                    type="button"
+                    className="leaderboard-page-button"
+                    onClick={goToPreviousPage}
+                    disabled={!canGoBack}
+                  >
+                    ← Pagina prima
+                  </button>
+
+                  <span className="leaderboard-page-counter">
+                    {currentPage + 1} / {totalPages}
+                  </span>
+
+                  <button
+                    type="button"
+                    className="leaderboard-page-button"
+                    onClick={goToNextPage}
+                    disabled={!canGoNext}
+                  >
+                    Pagina dopo →
+                  </button>
+                </div>
+              </div>
             )}
           </div>
 
           <footer className="leaderboard-footer">
             <p className="leaderboard-quote">
-              “La leaderboard è la mia pista da ballo!”
+              “Ogni pagina ha il suo campione.”
             </p>
 
             <Link to="/" className="leaderboard-home-link">

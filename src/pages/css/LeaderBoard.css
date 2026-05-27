@@ -100,7 +100,7 @@
 
 .leaderboard-content {
   display: grid;
-  gap: 14px;
+  gap: 18px;
 }
 
 .leaderboard-state {
@@ -129,11 +129,133 @@
 }
 
 .leaderboard-list {
+  min-height: 358px;
   margin: 0;
   padding: 0;
   display: grid;
+  align-content: start;
   gap: 12px;
   list-style: none;
+}
+
+.leaderboard-book {
+  display: grid;
+  gap: 18px;
+}
+
+.leaderboard-book-cover {
+  position: relative;
+  padding: 10px;
+  border-radius: 26px;
+  background:
+    linear-gradient(90deg, rgba(122, 74, 23, 0.22), transparent 18%),
+    linear-gradient(135deg, #b97a56, #ffb347);
+  box-shadow:
+    inset 10px 0 18px rgba(80, 45, 20, 0.2),
+    0 14px 34px rgba(80, 45, 20, 0.2);
+}
+
+.leaderboard-book-cover::before {
+  content: "";
+  position: absolute;
+  top: 14px;
+  bottom: 14px;
+  left: 22px;
+  width: 4px;
+  border-radius: 999px;
+  background: rgba(122, 74, 23, 0.35);
+  box-shadow: 8px 0 0 rgba(255, 251, 230, 0.25);
+}
+
+.leaderboard-book-page {
+  position: relative;
+  min-height: 470px;
+  padding: 20px 18px;
+  border: 2px solid rgba(185, 122, 86, 0.26);
+  border-radius: 20px;
+  background:
+    linear-gradient(90deg, rgba(122, 74, 23, 0.08), transparent 12%),
+    repeating-linear-gradient(
+      0deg,
+      rgba(185, 122, 86, 0.08) 0,
+      rgba(185, 122, 86, 0.08) 1px,
+      transparent 1px,
+      transparent 58px
+    ),
+    #fffbe6;
+  box-shadow:
+    inset 18px 0 24px rgba(122, 74, 23, 0.08),
+    inset -8px 0 18px rgba(255, 255, 255, 0.55);
+}
+
+.leaderboard-page-top,
+.leaderboard-page-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: rgba(122, 74, 23, 0.68);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.leaderboard-page-top {
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 2px dashed rgba(185, 122, 86, 0.25);
+}
+
+.leaderboard-page-bottom {
+  margin-top: 16px;
+  padding-top: 10px;
+  border-top: 2px dashed rgba(185, 122, 86, 0.25);
+}
+
+.leaderboard-book-controls {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+}
+
+.leaderboard-page-button {
+  min-height: 46px;
+  padding: 10px 18px;
+  border: 2px solid var(--leaderboard-brown);
+  border-radius: 999px;
+  color: var(--leaderboard-brown);
+  background: var(--leaderboard-cream);
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    opacity 0.18s ease,
+    background 0.18s ease;
+}
+
+.leaderboard-page-button:hover:not(:disabled) {
+  background: var(--leaderboard-yellow);
+  transform: translateY(-2px);
+}
+
+.leaderboard-page-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.leaderboard-page-counter {
+  min-width: 74px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  color: #fff;
+  background: var(--leaderboard-brown);
+  font-weight: 900;
+  text-align: center;
+  box-shadow: 0 8px 18px rgba(80, 45, 20, 0.18);
 }
 
 .leaderboard-row {
@@ -264,12 +386,38 @@
   }
 
   .leaderboard-card {
-    padding: 24px 14px;
+    padding: 24px 12px;
     border-radius: 24px;
   }
 
   .leaderboard-header {
     margin-bottom: 20px;
+  }
+
+  .leaderboard-book-cover {
+    padding: 8px;
+    border-radius: 22px;
+  }
+
+  .leaderboard-book-cover::before {
+    left: 16px;
+  }
+
+  .leaderboard-book-page {
+    min-height: 500px;
+    padding: 18px 12px;
+    border-radius: 18px;
+  }
+
+  .leaderboard-page-top,
+  .leaderboard-page-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .leaderboard-list {
+    min-height: 360px;
   }
 
   .leaderboard-row {
@@ -290,6 +438,16 @@
     border-radius: 14px;
   }
 
+  .leaderboard-book-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .leaderboard-page-counter {
+    order: -1;
+    justify-self: center;
+  }
+
+  .leaderboard-page-button,
   .leaderboard-home-link {
     width: 100%;
   }
@@ -298,6 +456,14 @@
 @media (max-width: 380px) {
   .leaderboard-badge {
     letter-spacing: 0.08em;
+  }
+
+  .leaderboard-book-page {
+    min-height: 560px;
+  }
+
+  .leaderboard-list {
+    min-height: 420px;
   }
 
   .leaderboard-row {
@@ -317,11 +483,5 @@
 
   .leaderboard-name {
     white-space: normal;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .leaderboard-home-link {
-    transition: none;
   }
 }
