@@ -6,7 +6,7 @@ import { update } from "../game/loop";
 import { render } from "../game/render";
 import { GAME_W, GAME_H } from "../game/constants";
 import { postScore } from "../services/scoresApi";
-import { getPlayerName } from "../utils/playerName";
+import { getPlayerIdentity } from "../utils/playerName";
 
 export default function GameCanvas() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -68,8 +68,10 @@ export default function GameCanvas() {
 
         if (!scoreSaved) {
           scoreSaved = true;
+          const player = getPlayerIdentity();
           postScore({
-            name: getPlayerName() || "Player",
+            playerId: player.id,
+            name: player.name,
             score: Math.floor(world.score),
             createdAt: new Date().toISOString(),
           }).catch(console.error);

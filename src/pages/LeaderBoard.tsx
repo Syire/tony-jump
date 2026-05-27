@@ -1,122 +1,182 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+
 import { getTopScores, ScoreItem } from "../services/scoresApi";
+import "./css/LeaderBoard.css";
+
+const podiumIcons = ["👑", "🥈", "🥉"];
+
+const SCORES_LIMIT = 50;
+const SCORES_PER_PAGE = 5;
 
 export default function Leaderboard() {
-    const [scores, setScores] = useState<ScoreItem[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+  const [scores, setScores] = useState<ScoreItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(0);
 
-    useEffect(() => {
-        getTopScores(10)
-            .then((data) => {
-                setScores(data);
-            })
-            .catch((e) => setError(e.message))
-            .finally(() => setLoading(false));
-    }, []);
+  useEffect(() => {
+    getTopScores(SCORES_LIMIT)
+      .then((data) => {
+        setScores(data);
+        setCurrentPage(0);
+      })
+      .catch((e) => setError(e.message))
+      .finally(() => setLoading(false));
+  }, []);
 
-    return (
-        <div style={{
-            minHeight: '100vh',
-            background: 'linear-gradient(180deg, #f5f7fa, #e4e7eb)',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontFamily: 'Montserrat, Arial, sans-serif',
-        }}>
-            <div style={{
-                background: 'white',
-                borderRadius: 20,
-                boxShadow: '0 10px 30px rgba(0,0,0,0.12)',
-                padding: '36px 32px 32px 32px',
-                maxWidth: 440,
-                width: '92%',
-                margin: '0 auto',
-                textAlign: 'center',
-                border: '3px solid #b97a56',
-                position: 'relative',
-            }}>
-                <div style={{
-                    position: 'absolute',
-                    top: -32,
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    background: '#b97a56',
-                    color: '#fff',
-                    fontWeight: 900,
-                    fontSize: 22,
-                    padding: '8px 32px',
-                    borderRadius: 32,
-                    boxShadow: '0 2px 8px #b97a5677',
-                    letterSpacing: 2,
-                    border: '2px solid #fff',
-                }}>
-                    Tony Pitony Leaderboard
-                </div>
-                <h2 style={{
-                    color: '#b97a56',
-                    marginBottom: 12,
-                    marginTop: 24,
-                    fontWeight: 800,
-                    fontSize: '2em',
-                    letterSpacing: 1,
-                }}>
-                    La pista da ballo dei campioni!
-                </h2>
-                <div style={{ fontSize: 16, color: '#333', marginBottom: 18, fontWeight: 500, fontStyle: 'italic' }}>
-                    “Spacca tutto, Pitony style!”
-                </div>
-                {loading && <p style={{ color: '#b97a56', fontWeight: 700 }}>Caricamento...</p>}
-                {error && <p style={{ color: 'crimson', fontWeight: 700 }}>{error}</p>}
-                {!loading && !error && (
-                    <ol style={{
-                        padding: 0,
-                        margin: 0,
-                        listStyle: 'decimal inside',
-                        textAlign: 'left',
-                        fontSize: 18,
-                        fontWeight: 700,
-                        color: '#222',
-                    }}>
-                        {scores.map((s, i) => (
-                            <li key={s.id} style={{
-                                margin: '12px 0',
-                                fontWeight: i === 0 ? 900 : 700,
-                                fontSize: i === 0 ? '1.3em' : '1em',
-                                color: i === 0 ? '#b97a56' : '#333',
-                                background: i === 0 ? 'rgba(185,122,86,0.08)' : 'none',
-                                borderRadius: 12,
-                                padding: '6px 12px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 10,
-                            }}>
-                                <span style={{ fontSize: 22 }}>{i === 0 ? '👑' : '🎵'}</span>
-                                <b>{s.name}</b> <span style={{ color: '#b97a56', fontWeight: 600 }}>— {s.score}</span>
-                            </li>
-                        ))}
+  const totalPages = Math.max(1, Math.ceil(scores.length / SCORES_PER_PAGE));
+
+  const currentScores = useMemo(() => {
+    const start = currentPage * SCORES_PER_PAGE;
+    const end = start + SCORES_PER_PAGE;
+
+    return scores.slice(start, end);
+  }, [scores, currentPage]);
+
+  const canGoBack = currentPage > 0;
+  const canGoNext = currentPage < totalPages - 1;
+
+  const goToPreviousPage = () => {
+    setCurrentPage((page) => Math.max(0, page - 1));
+  };
+
+  const goToNextPage = () => {
+    setCurrentPage((page) => Math.min(totalPages - 1, page + 1));
+  };
+
+  return (
+    <main className="leaderboard-page">
+      <section className="leaderboard-shell" aria-labelledby="leaderboard-title">
+        <div className="leaderboard-card">
+          <header className="leaderboard-header">
+            <div className="leaderboard-badge">Tony Pitony Leaderboard</div>
+
+            <h1 id="leaderboard-title" className="leaderboard-title">
+              Classifica
+            </h1>
+
+            <p className="leaderboard-subtitle">
+              Sfoglia il libro dei campioni: ogni pagina mostra i migliori
+              salti della pista Pitony.
+            </p>
+          </header>
+
+          <div className="leaderboard-content">
+            {loading && (
+              <p className="leaderboard-state">Caricamento classifica...</p>
+            )}
+
+            {error && (
+              <p className="leaderboard-state leaderboard-state--error">
+                {error}
+              </p>
+            )}
+
+            {!loading && !error && scores.length === 0 && (
+              <p className="leaderboard-empty">
+                Ancora nessun punteggio. Fai il primo salto leggendario!
+              </p>
+            )}
+
+            {!loading && !error && scores.length > 0 && (
+              <div className="leaderboard-book">
+                <div className="leaderboard-book-cover">
+                  <div className="leaderboard-book-page">
+                    <div className="leaderboard-page-top">
+                      <span>Pagina {currentPage + 1}</span>
+                      <span>
+                        Posizioni{" "}
+                        {currentPage * SCORES_PER_PAGE + 1}
+                        {" - "}
+                        {currentPage * SCORES_PER_PAGE + currentScores.length}
+                      </span>
+                    </div>
+
+                    <ol className="leaderboard-list" aria-label="Classifica giocatori">
+                      {currentScores.map((score, index) => {
+                        const globalIndex =
+                          currentPage * SCORES_PER_PAGE + index;
+                        const rank = globalIndex + 1;
+                        const isPodium = rank <= 3;
+
+                        return (
+                          <li
+                            key={
+                              score.id ?? `${score.name}-${score.score}-${rank}`
+                            }
+                            className={`leaderboard-row${
+                              isPodium ? " leaderboard-row--podium" : ""
+                            }`}
+                          >
+                            <span className="leaderboard-rank">
+                              {podiumIcons[globalIndex] ?? rank}
+                            </span>
+
+                            <div className="leaderboard-player">
+                              <span className="leaderboard-name">
+                                {score.name}
+                              </span>
+                              <span className="leaderboard-label">
+                                Posizione #{rank}
+                              </span>
+                            </div>
+
+                            <div className="leaderboard-score">
+                              <strong>{score.score}</strong>
+                              <span>punti</span>
+                            </div>
+                          </li>
+                        );
+                      })}
                     </ol>
-                )}
-                <div style={{ fontSize: 15, color: '#b97a56', marginTop: 18, fontWeight: 600, fontStyle: 'italic' }}>
-                    “La leaderboard è la mia pista da ballo!”
+
+                    <div className="leaderboard-page-bottom">
+                      <span>
+                        {scores.length} giocatori nella classifica caricata
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <Link to="/" style={{
-                    display: 'inline-block',
-                    marginTop: 28,
-                    textDecoration: 'none',
-                    padding: '12px 32px',
-                    borderRadius: 999,
-                    border: '2px solid #b97a5s6',
-                    color: '#b97a56',
-                    fontWeight: 800,
-                    background: 'transparent',
-                    letterSpacing: 1,
-                    fontSize: 18,
-                    transition: 'all 0.2s',
-                }}>Home</Link>
-            </div>
+
+                <div className="leaderboard-book-controls">
+                  <button
+                    type="button"
+                    className="leaderboard-page-button"
+                    onClick={goToPreviousPage}
+                    disabled={!canGoBack}
+                  >
+                    ← Pagina prima
+                  </button>
+
+                  <span className="leaderboard-page-counter">
+                    {currentPage + 1} / {totalPages}
+                  </span>
+
+                  <button
+                    type="button"
+                    className="leaderboard-page-button"
+                    onClick={goToNextPage}
+                    disabled={!canGoNext}
+                  >
+                    Pagina dopo →
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <footer className="leaderboard-footer">
+            <p className="leaderboard-quote">
+              “Ogni pagina ha il suo campione.”
+            </p>
+
+            <Link to="/" className="leaderboard-home-link">
+              Torna alla Home
+            </Link>
+          </footer>
         </div>
-    );
+      </section>
+    </main>
+  );
 }

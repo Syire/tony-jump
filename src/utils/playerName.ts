@@ -1,32 +1,123 @@
-const STORAGE_KEY = "tony_player_name";
+const PLAYER_ID_STORAGE_KEY = "tony_player_id";
+const PLAYER_NAME_STORAGE_KEY = "tony_player_name";
+
+const MAX_NAME_LENGTH = 20;
+
+export type PlayerIdentity = {
+  id: string;
+  name: string;
+};
 
 const ADJECTIVES = [
-  "Elegante", "Sborone", "Spaccone", "Figo", "Sfrontato", "Chic", "Tamarro", "Carismatico", "Irriverente", "Sorridente", "Abbronzato", "Sicuro", "Esagerato", "Simpatichissimo", "Inconfondibile"
+  "Elegante",
+  "Sborone",
+  "Spaccone",
+  "Figo",
+  "Sfrontato",
+  "Chic",
+  "Tamarro",
+  "Carismatico",
+  "Irriverente",
+  "Sorridente",
+  "Abbronzato",
+  "Sicuro",
+  "Esagerato",
+  "Pitony",
+  "Mitico",
 ];
 
 const NOUNS = [
-  "Rayban", "Cravatta", "Giacca", "Pitony", "Tony", "Occhialone", "ScarpaLucida", "CapelloFissato", "SelfieKing", "MemeBoss", "Catenone", "Sorrisone", "Briatore", "CiaoBellezza", "SignorPitony"
+  "Rayban",
+  "Cravatta",
+  "Giacca",
+  "Tony",
+  "Occhiale",
+  "Scarpa",
+  "Selfie",
+  "Meme",
+  "Boss",
+  "Catenone",
+  "Sorrisone",
+  "Briatore",
+  "Salto",
+  "Campione",
+  "Pitony",
 ];
 
-function randomItem(arr: string[]) {
-  return arr[Math.floor(Math.random() * arr.length)];
+function randomItem(items: string[]) {
+  return items[Math.floor(Math.random() * items.length)];
 }
 
-export function generateRandomName() {
-  return `${randomItem(ADJECTIVES)}${randomItem(NOUNS)}${Math.floor(
-    Math.random() * 100
-  )}`;
+function createPlayerId() {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return crypto.randomUUID();
+  }
+
+  return `player_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
 }
 
-export function getPlayerName(): string {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved) return saved;
+export function normalizePlayerName(name: string) {
+  return name.trim().replace(/\s+/g, " ").slice(0, MAX_NAME_LENGTH);
+}
 
-  const randomName = generateRandomName();
-  localStorage.setItem(STORAGE_KEY, randomName);
+export function generateRandomName(takenNames: string[] = []) {
+  const takenNameSet = new Set(takenNames.map(normalizePlayerName));
+
+  for (let attempt = 0; attempt < 120; attempt += 1) {
+    const suffix = Math.floor(1000 + Math.random() * 9000).toString();
+    const baseName = `${randomItem(ADJECTIVES)}${randomItem(NOUNS)}`;
+    const maxBaseLength = MAX_NAME_LENGTH - suffix.length;
+    const candidate = normalizePlayerName(`${baseName.slice(0, maxBaseLength)}${suffix}`);
+
+    if (!takenNameSet.has(candidate)) {
+      return candidate;
+    }
+  }
+
+  return `Pitony${Date.now().toString().slice(-6)}`;
+}
+
+export function getPlayerId() {
+  const savedId = localStorage.getItem(PLAYER_ID_STORAGE_KEY);
+
+  if (savedId) {
+    return savedId;
+  }
+
+  const newId = createPlayerId();
+  localStorage.setItem(PLAYER_ID_STORAGE_KEY, newId);
+
+  return newId;
+}
+
+export function getPlayerName(takenNames: string[] = []) {
+  const savedName = localStorage.getItem(PLAYER_NAME_STORAGE_KEY);
+
+  if (savedName) {
+    return normalizePlayerName(savedName);
+  }
+
+  const randomName = generateRandomName(takenNames);
+  localStorage.setItem(PLAYER_NAME_STORAGE_KEY, randomName);
+
   return randomName;
 }
 
+export function getPlayerIdentity(takenNames: string[] = []): PlayerIdentity {
+  return {
+    id: getPlayerId(),
+    name: getPlayerName(takenNames),
+  };
+}
+
 export function setPlayerName(name: string) {
-  localStorage.setItem(STORAGE_KEY, name);
+  const cleanName = normalizePlayerName(name);
+
+  if (!cleanName) {
+    throw new Error("Nome giocatore non valido");
+  }
+
+  localStorage.setItem(PLAYER_NAME_STORAGE_KEY, cleanName);
+
+  return cleanName;
 }
