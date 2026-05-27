@@ -57,7 +57,7 @@ function createPlayerId() {
 }
 
 export function normalizePlayerName(name: string) {
-  return name.trim().replace(/\s+/g, " ").slice(0, MAX_NAME_LENGTH);
+  return name.trim().replace(/\s+/g, " ");
 }
 
 export function generateRandomName(takenNames: string[] = []) {
@@ -65,11 +65,11 @@ export function generateRandomName(takenNames: string[] = []) {
 
   for (let attempt = 0; attempt < 120; attempt += 1) {
     const suffix = Math.floor(1000 + Math.random() * 9000).toString();
-    const baseName = `${randomItem(ADJECTIVES)}${randomItem(NOUNS)}`;
-    const maxBaseLength = MAX_NAME_LENGTH - suffix.length;
-    const candidate = normalizePlayerName(`${baseName.slice(0, maxBaseLength)}${suffix}`);
+    const candidate = normalizePlayerName(
+      `${randomItem(ADJECTIVES)}${randomItem(NOUNS)}${suffix}`
+    );
 
-    if (!takenNameSet.has(candidate)) {
+    if (candidate.length <= MAX_NAME_LENGTH && !takenNameSet.has(candidate)) {
       return candidate;
     }
   }
