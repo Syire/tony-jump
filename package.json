@@ -2,7 +2,7 @@
   "name": "react_exam",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://syire.github.io/React_jump_higher",
+  "homepage": "https://syire.github.io/tony-jump",
   "type": "module",
   "scripts": {
     "dev": "vite",

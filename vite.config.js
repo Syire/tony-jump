@@ -2,6 +2,6 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 export default defineConfig({
-  base: "/React_jump_higher/",
+  base: "/tony-jump/",
   plugins: [react()],
 });
